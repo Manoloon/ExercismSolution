@@ -1,0 +1,11 @@
+(defpackage :raindrops
+  (:use :cl)
+  (:export :convert))
+; learning how to use conditionals inside a string.. this is madness !! 
+(in-package :raindrops)
+(defun convert (n)
+  (let ((result 
+         (format nil "~[Pling~]~[Plang~]~[Plong~]" (rem n 3) (rem n 5) (rem n 7))))
+    (if (zerop (length result))
+        (write-to-string n)
+        result)))
