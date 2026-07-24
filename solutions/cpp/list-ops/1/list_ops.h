@@ -1,0 +1,76 @@
+#pragma once
+#include <vector>
+#include <numeric>
+#include <algorithm>
+
+namespace list_ops {
+    template<typename T>
+    std::vector<T> append(std::vector<T>& list1, std::vector<T>& list2){
+        for(const auto& e : list2){
+            list1.emplace_back(e);
+        }
+        return list1;
+    }
+
+    template<typename T>
+    std::vector<T> concat(const std::vector<std::vector<T>>& lists){
+        if(lists.empty()) return {};
+        std::vector<T> result;
+        result.reserve(lists.size());
+        for(auto l : lists){
+            result.insert(std::end(result),std::begin(l),std::end(l));
+        }
+        return result;
+    }
+
+    template<typename T, typename Predicate>
+    std::vector<T> filter(std::vector<T> list,const Predicate& predicate){
+        if(list.empty()) std::vector<T>{};
+        std::vector<T> filtered;
+        filtered.reserve(list.size());
+        std::copy_if(std::begin(list),std::end(list),std::back_inserter(filtered),predicate);
+        return filtered;
+    }
+
+    template<typename T>
+    size_t length(std::vector<T> list) {
+        if(list.empty()){return 0;}
+        std::vector<T> tail(std::begin(list)+1,std::end(list));
+        return 1 + length(tail); 
+    }
+
+    template<typename T, typename Func>
+    std::vector<T> map(std::vector<T> list,const Func& func){
+        std::vector<T> mapped;
+        for(auto e : list){
+            mapped.emplace_back(func(e));
+        }
+        return mapped;
+    }
+
+    template<typename T, typename Func>
+    T foldl(std::vector<T> list,T acc,const Func& func){
+        if(list.size() == 0) return acc;
+        T head = list[0];
+        std::vector<T> tail(std::begin(list)+1,std::end(list));
+        return foldl(tail,func(acc,head),func);     
+    }
+
+    template<typename T, typename Func>
+    T foldr(std::vector<T> list,T acc,const Func& func){
+        if(list.size() == 0) return acc;
+        T head = list[0];
+        std::vector<T> tail(std::begin(list)+1,std::end(list));
+        return func(foldr(tail,acc,func),head);
+    }
+
+    template<typename T>
+    std::vector<T> reverse(const std::vector<T>& list){
+        if(list.empty()) return {};
+        // Flatten the vector of vectors into a single vector
+        std::vector<T> flattened = list;
+        // Reverse the flattened vector
+        std::reverse(flattened.begin(), flattened.end());
+        return flattened;
+    }
+}  // namespace list_ops
